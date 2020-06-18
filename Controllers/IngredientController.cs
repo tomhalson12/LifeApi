@@ -38,7 +38,7 @@ namespace LifeApi.Controllers
         {
             _ingredientsRepository.Create(ingredient);
 
-            return CreatedAtRoute("GetIngredient", new { id = ingredient.Id.ToString() }, ingredient);
+            return CreatedAtRoute("GetIngredient", new { id = ingredient.id.ToString() }, ingredient);
         }
 
         [HttpPut("{id:length(24)}")]
@@ -66,7 +66,7 @@ namespace LifeApi.Controllers
                 return NotFound();
             }
 
-            _ingredientsRepository.Remove(ingredient.Id);
+            _ingredientsRepository.Remove(ingredient.id);
 
             return NoContent();
         }

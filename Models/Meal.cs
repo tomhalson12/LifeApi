@@ -10,13 +10,11 @@ namespace LifeApi.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; }
+        public string id { get; set; }
 
-        [BsonElement("Name")]
-        [JsonProperty("Name")]
-        public string MealName { get; set; }
+        public string name { get; set; }
 
-        public string Category { get; set; }
+        public string category { get; set; }
 
         public int time { get; set; }
 

@@ -16,7 +16,7 @@ namespace LifeApi.Repositories {
             _ingredients.Find(ingredient => true).ToList();
 
         public Ingredient Get(string id) =>
-            _ingredients.Find<Ingredient>(ingredient => ingredient.Id == id).FirstOrDefault();
+            _ingredients.Find<Ingredient>(ingredient => ingredient.id == id).FirstOrDefault();
     
         public Ingredient Create(Ingredient ingredient){
             _ingredients.InsertOne(ingredient);
@@ -24,13 +24,13 @@ namespace LifeApi.Repositories {
         }
 
         public void Update(string id, Ingredient ingredientIn) =>
-            _ingredients.ReplaceOne(ingredient => ingredient.Id == id, ingredientIn);
+            _ingredients.ReplaceOne(ingredient => ingredient.id == id, ingredientIn);
 
         public void Remove(Ingredient ingredientIn) =>
-            _ingredients.DeleteOne(ingredient => ingredient.Id == ingredientIn.Id);
+            _ingredients.DeleteOne(ingredient => ingredient.id == ingredientIn.id);
 
         public void Remove(string id) =>
-            _ingredients.DeleteOne(ingredient => ingredient.Id == id);
+            _ingredients.DeleteOne(ingredient => ingredient.id == id);
 
     }
 
