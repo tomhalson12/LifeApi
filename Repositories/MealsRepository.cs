@@ -3,13 +3,13 @@ using MongoDB.Driver;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace LifeApi.Services
+namespace LifeApi.Repositories
 {
-    public class MealService
+    public class MealsRepository
     {
         private readonly IMongoCollection<Meal> _meals;
 
-        public MealService(DatabaseConnection dbConnection)
+        public MealsRepository(DatabaseConnection dbConnection)
         {
             _meals = dbConnection.database.GetCollection<Meal>(dbConnection.collectionNames["MealsCollectionName"]);
         }

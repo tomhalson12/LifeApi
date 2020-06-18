@@ -1,29 +1,29 @@
 using LifeApi.Models;
-using LifeApi.Services;
+using LifeApi.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 
-namespace MealsApi.Controllers
+namespace LifeApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class MealsController : ControllerBase
     {
-        private readonly MealService _mealService;
+        private readonly MealsRepository  _mealRepository;
 
-        public MealsController(MealService mealService)
+        public MealsController(MealsRepository mealRepository)
         {
-            _mealService = mealService;
+            _mealRepository = mealRepository;
         }
 
         [HttpGet]
         public ActionResult<List<Meal>> Get() =>
-            _mealService.Get();
+            _mealRepository.Get();
 
         [HttpGet("{id:length(24)}", Name = "GetMeal")]
         public ActionResult<Meal> Get(string id)
         {
-            var meal = _mealService.Get(id);
+            var meal = _mealRepository.Get(id);
 
             if (meal == null)
             {
@@ -36,7 +36,7 @@ namespace MealsApi.Controllers
         [HttpPost]
         public ActionResult<Meal> Create(Meal meal)
         {
-            _mealService.Create(meal);
+            _mealRepository.Create(meal);
 
             return CreatedAtRoute("GetMeal", new { id = meal.Id.ToString() }, meal);
         }
@@ -44,14 +44,14 @@ namespace MealsApi.Controllers
         [HttpPut("{id:length(24)}")]
         public IActionResult Update(string id, Meal mealIn)
         {
-            var meal = _mealService.Get(id);
+            var meal = _mealRepository.Get(id);
 
             if (meal == null)
             {
                 return NotFound();
             }
 
-            _mealService.Update(id, mealIn);
+            _mealRepository.Update(id, mealIn);
 
             return NoContent();
         }
@@ -59,14 +59,14 @@ namespace MealsApi.Controllers
         [HttpDelete("{id:length(24)}")]
         public IActionResult Delete(string id)
         {
-            var meal = _mealService.Get(id);
+            var meal = _mealRepository.Get(id);
 
             if (meal == null)
             {
                 return NotFound();
             }
 
-            _mealService.Remove(meal.Id);
+            _mealRepository.Remove(meal.Id);
 
             return NoContent();
         }

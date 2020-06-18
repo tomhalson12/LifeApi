@@ -14,7 +14,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 
 using LifeApi.Models;
-using LifeApi.Services;
+using LifeApi.Repositories;
 
 namespace LifeApi
 {
@@ -38,7 +38,10 @@ namespace LifeApi
             
             services.AddSingleton<DatabaseConnection>();
             
-            services.AddSingleton<MealService>();
+            services.AddSingleton<MealsRepository>();
+            services.AddSingleton<IngredientsRepository>();
+
+       
 
             services.AddControllers()
                 .AddNewtonsoftJson(options => options.UseMemberCasing());
