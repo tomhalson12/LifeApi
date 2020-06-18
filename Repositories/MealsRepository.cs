@@ -3,13 +3,13 @@ using MongoDB.Driver;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace LifeApi.Services
+namespace LifeApi.Repositories
 {
-    public class MealService
+    public class MealsRepository
     {
         private readonly IMongoCollection<Meal> _meals;
 
-        public MealService(DatabaseConnection dbConnection)
+        public MealsRepository(DatabaseConnection dbConnection)
         {
             _meals = dbConnection.database.GetCollection<Meal>(dbConnection.collectionNames["MealsCollectionName"]);
         }
@@ -18,7 +18,7 @@ namespace LifeApi.Services
             _meals.Find(meal => true).ToList();
 
         public Meal Get(string id) =>
-            _meals.Find<Meal>(meal => meal.Id == id).FirstOrDefault();
+            _meals.Find<Meal>(meal => meal.id == id).FirstOrDefault();
 
         public Meal Create(Meal meal)
         {
@@ -27,12 +27,12 @@ namespace LifeApi.Services
         }
 
         public void Update(string id, Meal mealIn) =>
-            _meals.ReplaceOne(meal => meal.Id == id, mealIn);
+            _meals.ReplaceOne(meal => meal.id == id, mealIn);
 
         public void Remove(Meal mealIn) =>
-            _meals.DeleteOne(meal => meal.Id == mealIn.Id);
+            _meals.DeleteOne(meal => meal.id == mealIn.id);
 
         public void Remove(string id) => 
-            _meals.DeleteOne(meal => meal.Id == id);
+            _meals.DeleteOne(meal => meal.id == id);
     }
 }

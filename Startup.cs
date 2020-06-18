@@ -14,12 +14,14 @@ using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 
 using LifeApi.Models;
-using LifeApi.Services;
+using LifeApi.Repositories;
 
 namespace LifeApi
 {
     public class Startup
     {
+        readonly string AllowSpecificOrigins = "_allowSpecificOrigins";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -38,7 +40,18 @@ namespace LifeApi
             
             services.AddSingleton<DatabaseConnection>();
             
-            services.AddSingleton<MealService>();
+            services.AddSingleton<MealsRepository>();
+            services.AddSingleton<IngredientsRepository>();
+
+            services.AddCors(options => {
+                options.AddPolicy(name: AllowSpecificOrigins,
+                    builder => {
+                        builder.WithOrigins("http://localhost:3000")
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+                    });
+            });   
+
 
             services.AddControllers()
                 .AddNewtonsoftJson(options => options.UseMemberCasing());
@@ -55,6 +68,8 @@ namespace LifeApi
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(AllowSpecificOrigins);
 
             app.UseAuthorization();
 
