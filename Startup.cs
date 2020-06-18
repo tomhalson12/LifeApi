@@ -20,6 +20,8 @@ namespace LifeApi
 {
     public class Startup
     {
+        readonly string AllowSpecificOrigins = "_allowSpecificOrigins";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -41,7 +43,13 @@ namespace LifeApi
             services.AddSingleton<MealsRepository>();
             services.AddSingleton<IngredientsRepository>();
 
-       
+            services.AddCors(options => {
+                options.AddPolicy(name: AllowSpecificOrigins,
+                    builder => {
+                        builder.WithOrigins("http://localhost:3000");
+                    });
+            });   
+
 
             services.AddControllers()
                 .AddNewtonsoftJson(options => options.UseMemberCasing());
@@ -58,6 +66,8 @@ namespace LifeApi
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(AllowSpecificOrigins);
 
             app.UseAuthorization();
 
