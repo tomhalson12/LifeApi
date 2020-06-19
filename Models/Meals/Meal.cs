@@ -1,8 +1,8 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using Newtonsoft.Json;
 using System.Collections.Generic;
-using LifeApi.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace LifeApi.Models
 {
@@ -14,7 +14,9 @@ namespace LifeApi.Models
 
         public string name { get; set; }
 
-        public string category { get; set; }
+        [JsonConverter(typeof(StringEnumConverter))]
+        [BsonRepresentation(BsonType.String)]
+        public MealCategory category { get; set; }
 
         public int time { get; set; }
 
