@@ -52,7 +52,6 @@ namespace LifeApi
                     });
             });   
 
-
             services.AddControllers()
                 .AddNewtonsoftJson(options => options.UseMemberCasing());
         }

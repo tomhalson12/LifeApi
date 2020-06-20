@@ -2,10 +2,11 @@ using LifeApi.Models;
 using LifeApi.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System;
 
 namespace LifeApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/meals/[controller]")]
     [ApiController]
     public class IngredientsController : ControllerBase
     {
@@ -69,6 +70,11 @@ namespace LifeApi.Controllers
             _ingredientsRepository.Remove(ingredient.id);
 
             return NoContent();
+        }
+
+        [HttpGet("units")]
+        public ActionResult<IngredientUnit[]> GetIngredientUnits(){
+            return Ok(Enum.GetNames(typeof(IngredientUnit)));
         }
     }
 }

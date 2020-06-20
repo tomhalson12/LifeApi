@@ -2,6 +2,7 @@ using LifeApi.Models;
 using LifeApi.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System;
 
 namespace LifeApi.Controllers
 {
@@ -69,6 +70,11 @@ namespace LifeApi.Controllers
             _mealRepository.Remove(meal.id);
 
             return NoContent();
+        }
+
+        [HttpGet("categories")]
+        public ActionResult<MealCategory[]> GetCategories(){
+            return Ok(Enum.GetNames(typeof(MealCategory)));
         }
     }
 }
