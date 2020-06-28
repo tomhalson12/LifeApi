@@ -3,6 +3,7 @@ using LifeApi.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System;
+using LifeApi.Utils;
 
 namespace LifeApi.Controllers
 {
@@ -10,11 +11,13 @@ namespace LifeApi.Controllers
     [ApiController]
     public class MealsController : ControllerBase
     {
-        private readonly MealsRepository  _mealRepository;
+        private readonly MealsRepository _mealRepository;
+        private readonly IngredientsRepository _ingredientsRepository;
 
-        public MealsController(MealsRepository mealRepository)
+        public MealsController(MealsRepository mealRepository, IngredientsRepository ingredientsRepository)
         {
             _mealRepository = mealRepository;
+            _ingredientsRepository = ingredientsRepository;
         }
 
         [HttpGet]
@@ -73,8 +76,38 @@ namespace LifeApi.Controllers
         }
 
         [HttpGet("categories")]
-        public ActionResult<MealCategory[]> GetCategories(){
+        public ActionResult<MealCategory[]> GetCategories()
+        {
             return Ok(Enum.GetNames(typeof(MealCategory)));
+        }
+
+        [HttpGet("readFile")]
+        public ActionResult<List<Meal>> mealsFromFile()
+        {
+            ParserCsv parser = new ParserCsv();
+
+            List<Meal> meals = parser.parseMealsCsv();
+
+            foreach (Meal meal in meals)
+            {
+                ICollection<IngredientQuantity> ingredients = meal.ingredients;
+
+                foreach (IngredientQuantity ingredientQuantity in ingredients)
+                {
+                    Ingredient ingredient = ingredientQuantity.ingredient;
+
+                    Ingredient ingredientFromDb = _ingredientsRepository.GetByName(ingredient.name);
+
+                    if (ingredientFromDb == null)
+                    {
+                        ingredientFromDb = _ingredientsRepository.Create(ingredient);
+                    }
+                    
+                    ingredientQuantity.ingredient = ingredientFromDb;
+                }
+            }
+
+            return _mealRepository.CreateMany(meals);
         }
     }
 }

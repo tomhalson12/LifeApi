@@ -17,6 +17,9 @@ namespace LifeApi.Repositories {
 
         public Ingredient Get(string id) =>
             _ingredients.Find<Ingredient>(ingredient => ingredient.id == id).FirstOrDefault();
+
+        public Ingredient GetByName(string name) =>
+            _ingredients.Find<Ingredient>(ingredient => ingredient.name == name).FirstOrDefault();
     
         public Ingredient Create(Ingredient ingredient){
             _ingredients.InsertOne(ingredient);

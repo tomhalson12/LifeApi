@@ -26,6 +26,11 @@ namespace LifeApi.Repositories
             return meal;
         }
 
+        public List<Meal> CreateMany(List<Meal> meals){
+            _meals.InsertMany(meals);
+            return meals;
+        }
+
         public void Update(string id, Meal mealIn) =>
             _meals.ReplaceOne(meal => meal.id == id, mealIn);
 
