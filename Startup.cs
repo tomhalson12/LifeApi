@@ -42,6 +42,7 @@ namespace LifeApi
             
             services.AddSingleton<MealsRepository>();
             services.AddSingleton<IngredientsRepository>();
+            services.AddSingleton<MealPlanRepository>();
 
             services.AddCors(options => {
                 options.AddPolicy(name: AllowSpecificOrigins,
