@@ -26,34 +26,20 @@ namespace LifeApi.ScheduledTasks
             int today = (int) DateTime.Today.DayOfWeek;
 
             if(today == (int) DayOfWeek.Friday || today == (int) DayOfWeek.Saturday || today == (int) DayOfWeek.Sunday) {
-                bool noUpcomingPlan = false;
-
-                HttpResponseMessage response = await httpClient.GetAsync("https://localhost:5001/api/meals/plans/latest");
+                HttpResponseMessage response = await httpClient.GetAsync("https://localhost:5001/api/meals/plans/nextWeek");
 
                 if(response.StatusCode == HttpStatusCode.NotFound){
-                    noUpcomingPlan = true;           
-                } else if(response.IsSuccessStatusCode) {
-                    var responseContent = await response.Content.ReadAsStringAsync();
-                        
-                    MealPlan mealPlan = JsonConvert.DeserializeObject<MealPlan>(responseContent);
-
-                    DateTime date = mealPlan.startDate;
-
-                    if(date < DateTime.Today){
-                        Console.WriteLine("Latest Plan not in future");
-                        noUpcomingPlan = true;
-                    }
-                } else {
-                    Console.WriteLine("Unable to call api");       
-                }
-
-                if(noUpcomingPlan){
                     Console.WriteLine("Creating new meal plan");
 
                     var parameters = new Dictionary<string, string> {{ "numMeals", "5" }};
                     var encodedContent = new FormUrlEncodedContent (parameters);
                                 
-                    HttpResponseMessage res = await httpClient.PostAsync("https://localhost:5001/api/meals/plans?numMeals=5", encodedContent);            
+                    HttpResponseMessage res = await httpClient.PostAsync("https://localhost:5001/api/meals/plans?numMeals=5", encodedContent);         
+                } else if(response.IsSuccessStatusCode) {
+                    Console.WriteLine("Already have a meal plan for next week")
+                } else {
+                    Console.WriteLine("Unable to call api");       
+
                 }
             }
         }

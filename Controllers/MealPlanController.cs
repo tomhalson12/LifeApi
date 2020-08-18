@@ -148,5 +148,59 @@ namespace LifeApi.Controllers
 
             return mealPlan;
         }
+
+        [HttpGet("currentWeek/meals")]
+        public ActionResult<List<Meal>> GetCurrentWeekMeals()
+        {
+            DateTime previousMonday = DateTime.UtcNow.Date.AddDays(DayOfWeek.Monday - DateTime.UtcNow.DayOfWeek).ToLocalTime();
+
+            MealPlan currentMealPlan = _mealPlanRepository.GetByDate(previousMonday);
+
+            if(currentMealPlan == null){
+                return NotFound();
+            }
+
+            List<Meal> meals = new List<Meal>();
+
+            foreach(string mealId in currentMealPlan.mealIds){
+                meals.Add(_mealsRepository.Get(mealId));
+            }
+
+            return meals;
+        }
+
+        [HttpGet("nextWeek")]
+        public ActionResult<MealPlan> GetNextWeekMealPlan()
+        {
+            DateTime nextMonday = DateTime.UtcNow.Date.AddDays(DayOfWeek.Monday - DateTime.UtcNow.DayOfWeek + 7).ToLocalTime();
+
+            MealPlan mealPlan = _mealPlanRepository.GetByDate(nextMonday);
+
+            if(mealPlan == null){
+                return NotFound();
+            }
+
+            return mealPlan;
+        }
+
+        [HttpGet("nextWeek/meals")]
+        public ActionResult<List<Meal>> GetNextWeekMeals()
+        {
+            DateTime nextMonday = DateTime.UtcNow.Date.AddDays(DayOfWeek.Monday - DateTime.UtcNow.DayOfWeek + 7).ToLocalTime();
+
+            MealPlan mealPlan = _mealPlanRepository.GetByDate(nextMonday);
+
+            if(mealPlan == null){
+                return NotFound();
+            }
+
+            List<Meal> meals = new List<Meal>();
+
+            foreach(string mealId in mealPlan.mealIds){
+                meals.Add(_mealsRepository.Get(mealId));
+            }
+
+            return meals;
+        }
     }
 }
