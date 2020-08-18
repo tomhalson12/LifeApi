@@ -36,7 +36,7 @@ namespace LifeApi.ScheduledTasks
                                 
                     HttpResponseMessage res = await httpClient.PostAsync("https://localhost:5001/api/meals/plans?numMeals=5", encodedContent);         
                 } else if(response.IsSuccessStatusCode) {
-                    Console.WriteLine("Already have a meal plan for next week")
+                    Console.WriteLine("Already have a meal plan for next week");
                 } else {
                     Console.WriteLine("Unable to call api");       
 
