@@ -12,9 +12,12 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
+using Hangfire;
+using Hangfire.MemoryStorage;
 
 using LifeApi.Models;
 using LifeApi.Repositories;
+using LifeApi.ScheduledTasks;
 
 namespace LifeApi
 {
@@ -32,6 +35,15 @@ namespace LifeApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHangfire(config => 
+                config.SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseDefaultTypeSerializer()
+                .UseMemoryStorage()
+            );
+
+            services.AddHangfireServer();
+
             services.Configure<LifeDatabaseSettings>(
                 Configuration.GetSection(nameof(LifeDatabaseSettings)));
 
@@ -50,15 +62,21 @@ namespace LifeApi
                         builder.WithOrigins("http://localhost:3000")
                             .AllowAnyHeader()
                             .AllowAnyMethod();
+
+                        builder.WithOrigins("http://localhost:5001")
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
                     });
             });   
 
             services.AddControllers()
                 .AddNewtonsoftJson(options => options.UseMemberCasing());
+
+            services.AddSingleton<NewMealPlanJob>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IRecurringJobManager recurringJobManager, IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {
@@ -77,6 +95,14 @@ namespace LifeApi
             {
                 endpoints.MapControllers();
             });
+
+            app.UseHangfireDashboard();
+
+            recurringJobManager.AddOrUpdate(
+                "Create New Meal Plan",
+                () => serviceProvider.GetService<NewMealPlanJob>().CreateNewMealPlan(),
+                "0 */30 * ? * *"
+            );
         }
     }
 }

@@ -17,7 +17,7 @@ namespace LifeApi.Models
 
         public int sequenceNumber { get; set; }
 
-        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
+        [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
         public DateTime startDate { get; set; }
     }
 }

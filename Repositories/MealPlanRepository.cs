@@ -2,6 +2,7 @@ using LifeApi.Models;
 using MongoDB.Driver;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace LifeApi.Repositories
 {
@@ -42,6 +43,9 @@ namespace LifeApi.Repositories
 
         public MealPlan GetLatest() =>
             _mealPlans.Find<MealPlan>(mealPlan => true).Limit(1).Sort("{sequenceNumber:-1}").FirstOrDefault();
-        
+
+        public MealPlan GetByDate(DateTime date) =>
+            _mealPlans.Find<MealPlan>(mealPlan => mealPlan.startDate == date.ToLocalTime()).FirstOrDefault();
+         
     }
 }

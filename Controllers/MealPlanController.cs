@@ -37,6 +37,19 @@ namespace LifeApi.Controllers
             return mealPlan;
         }
 
+        [HttpGet("{date}", Name = "GetMealPlanByDate")]
+        public ActionResult<MealPlan> GetByDate(DateTime date)
+        {
+           var mealPlan = _mealPlanRepository.GetByDate(date);
+
+            if (mealPlan == null)
+            {
+                return NotFound();
+            }
+
+            return mealPlan;
+        }
+
         /*
         [HttpPost]
         public ActionResult<MealPlan> Create(MealPlan mealPlan)
@@ -112,7 +125,7 @@ namespace LifeApi.Controllers
             newMealPlan.previousPlanId = !latestMealPlanAvailable ? null : latestMealPlan.id;
             newMealPlan.sequenceNumber = !latestMealPlanAvailable ? 1 : latestMealPlan.sequenceNumber + 1;
 
-            DateTime today = DateTime.Today;
+            DateTime today = DateTime.UtcNow.Date;
             int daysUntilMonday = ((int) DayOfWeek.Monday - (int) today.DayOfWeek + 7) % 7;
             DateTime nextMonday = today.AddDays(daysUntilMonday);
 
@@ -121,6 +134,19 @@ namespace LifeApi.Controllers
             _mealPlanRepository.Create(newMealPlan);
 
             return CreatedAtRoute("GetMeal", new { id = newMealPlan.id.ToString() }, newMealPlan);
+        }
+
+        [HttpGet("latest")]
+        public ActionResult<MealPlan> GetLatest()
+        {
+            var mealPlan = _mealPlanRepository.GetLatest();
+
+            if (mealPlan == null)
+            {
+                return NotFound();
+            }
+
+            return mealPlan;
         }
     }
 }
