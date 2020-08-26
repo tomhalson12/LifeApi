@@ -230,12 +230,19 @@ namespace LifeApi.Controllers
             List<IngredientQuantity> finalIngredients = new List<IngredientQuantity>();
 
             foreach(IngredientQuantity iQ in ingredientQuantities){
-                foreach(IngredientQuantity fIq in finalIngredients){
-                    if(iQ.ingredient.id == fIq.ingredient.id && iQ.unit == fIq.unit){
-                        fIq.quantity += iQ.quantity;
-                    } else {
+                if(finalIngredients.Count == 0){
+                    finalIngredients.Add(iQ);
+                } else {
+                    bool alreadyHaveIngredient = false;
+                    foreach(IngredientQuantity fIq in finalIngredients){
+                        if(iQ.ingredient.id == fIq.ingredient.id && iQ.unit == fIq.unit){
+                            fIq.quantity += iQ.quantity;
+                            alreadyHaveIngredient = true;
+                            break;
+                        }
+                    }
+                    if(!alreadyHaveIngredient){
                         finalIngredients.Add(iQ);
-                        break;
                     }
                 }
             }
