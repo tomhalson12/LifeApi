@@ -202,5 +202,45 @@ namespace LifeApi.Controllers
 
             return meals;
         }
+
+        [HttpGet("nextWeek/meals/ingredients")]
+        public ActionResult<List<IngredientQuantity>> GetNextWeekIngredients()
+        {
+            DateTime nextMonday = DateTime.UtcNow.Date.AddDays(DayOfWeek.Monday - DateTime.UtcNow.DayOfWeek + 7).ToLocalTime();
+
+            MealPlan mealPlan = _mealPlanRepository.GetByDate(nextMonday);
+            Console.WriteLine("here");
+            if(mealPlan == null){
+                return NotFound();
+            }
+
+            List<Meal> meals = new List<Meal>();
+
+            foreach(string mealId in mealPlan.mealIds){
+                meals.Add(_mealsRepository.Get(mealId));
+            }
+
+            if(meals.Count == 0){
+                return NotFound();
+            }
+
+            List<IngredientQuantity> ingredientQuantities = new List<IngredientQuantity>();
+            meals.ForEach(meal => meal.ingredients.ToList().ForEach(ingredientQuantity => ingredientQuantities.Add(ingredientQuantity)));
+
+            List<IngredientQuantity> finalIngredients = new List<IngredientQuantity>();
+
+            foreach(IngredientQuantity iQ in ingredientQuantities){
+                foreach(IngredientQuantity fIq in finalIngredients){
+                    if(iQ.ingredient.id == fIq.ingredient.id && iQ.unit == fIq.unit){
+                        fIq.quantity += iQ.quantity;
+                    } else {
+                        finalIngredients.Add(iQ);
+                        break;
+                    }
+                }
+            }
+
+            return finalIngredients;
+        }
     }
 }

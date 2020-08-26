@@ -62,10 +62,6 @@ namespace LifeApi
                         builder.WithOrigins("http://localhost:3000")
                             .AllowAnyHeader()
                             .AllowAnyMethod();
-
-                        builder.WithOrigins("http://localhost:5001")
-                            .AllowAnyHeader()
-                            .AllowAnyMethod();
                     });
             });   
 
